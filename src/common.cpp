@@ -6,32 +6,33 @@
 
 #include "common.h"
 
-void cmn::GenerateSignalIntoFile(const std::string file_name, const int N, const int s_rand) {
-    srand(s_rand);
-    std::ofstream file_stream(file_name);
-
-    for (size_t i = 0; i < N; ++i) {
-        file_stream << ((double)(rand() % 100 )) / 10 << " " << ((double)(rand() % 100)) / 10 << '\n';
-    }
-
-    file_stream.close(); 
-}
-
-cmn::signal cmn::GenerateSample(const int N, const int s_rand) {
+cmn::signal cmn::GenerateSignal(const int N, const int s_rand) {
     srand(s_rand);
     cmn::signal sample;
 
     for (int i = 0; i < N; ++i) {
-        double real = ((double)(rand() % 100 )) / 10;
-        double imag = ((double)(rand() % 100)) / 10;
+        double real = ((double)(rand() % 100 )) / 100;
+        double imag = ((double)(rand() % 100)) / 100;
         sample.push_back(std::complex<double>(real, imag)); 
     }
 
     return sample;
 }
 
+void cmn::WriteSignalToFile(const cmn::signal signal, const std::string file_name) {
+    std::ofstream file_stream(file_name);
+    file_stream.precision(17);
+
+    for (size_t i = 0; i < signal.size(); ++i) {
+        file_stream << signal[i].real() << " " << signal[i].imag() << '\n';
+    }
+
+    file_stream.close(); 
+}
+
 cmn::signal cmn::ReadSignalFromFile(const std::string file_name) {
     std::ifstream file_stream(file_name);
+    file_stream.precision(17);
     cmn::signal signal;
 
     double real_signal_part;
@@ -48,11 +49,11 @@ cmn::signal cmn::ReadSignalFromFile(const std::string file_name) {
     return signal;
 }
 
-double cmn::MAE(cmn::signal a, cmn::signal b) {
+double cmn::MSE(cmn::signal a, cmn::signal b) {
     double result = 0;
 
     for (size_t i = 0; i < b.size(); ++i) {
-        result += abs(a[i] - b[i]);
+        result += pow(abs(a[i] - b[i]), 2);
     }
 
     return result / a.size();
