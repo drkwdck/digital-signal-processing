@@ -41,13 +41,15 @@ int main() {
     
     // Замеры времени для ДПФ
     auto file_stream  = std::ofstream("./matlab/time_dft.txt");
+    auto file_stream_N = std::ofstream("./matlab/N.txt");
     
     for (int i = 256; i < 256 * 64; i *= 2) {
         auto x = cmn::GenerateSignal(i, 0);
         start = clock();
         dft::DFT(x);
         end = clock();
-        file_stream << double(end - start) / CLOCKS_PER_SEC << " ";
+        file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
+        file_stream_N << i << '\n';
     }
 
     file_stream.close();
@@ -60,7 +62,7 @@ int main() {
         start = clock();
         fft::fft(x);
         end = clock();
-        file_stream << double(end - start) / CLOCKS_PER_SEC << " ";
+        file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
     }
 
     file_stream.close();
@@ -68,6 +70,8 @@ int main() {
     auto a = cmn::GenerateSignal(signal_points_count, 0);
     auto b = cmn::GenerateSignal(signal_points_count, 0);
     auto convolution = conv::Convolution(a, b);
+    auto conv2 = conv::FastConvolution(a, b);
+    std::cout << cmn::MSE(convolution, conv2) << std::endl;
 
     return 0;
 }

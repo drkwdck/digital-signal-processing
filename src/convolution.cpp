@@ -1,20 +1,25 @@
 #include "common.h"
 #include "convolution.h"
+#include "fft.h"
 
-cmn::signal conv::Convolution(cmn::signal a, cmn::signal b) {
-    if (a.size() > b.size()) {
-        for (size_t i = b.size() - 1; i < a.size(); ++i) {
-            b.push_back(0);
-        }
+// Если ветокры разных размеров, расширяет их, заполняя нулями
+void NormalizeVectors(cmn::signal a, cmn::signal b) {
+    
+}
+
+cmn::signal conv::Convolution(const cmn::signal a, const cmn::signal b) {
+    cmn::signal a_copy(a);
+    cmn::signal b_copy(b);
+
+    if (a_copy.size() > b_copy.size()) {
+        b_copy.resize(a.size(), 0);
     }
 
-    if (b.size() > a.size()) {
-        for (size_t i = a.size() - 1; i < b.size(); ++i) {
-            a.push_back(0);
-        }
+    if (b_copy.size() > a_copy.size()) {
+        a_copy.resize(b_copy.size(), 0);
     }
 
-    size_t N = a.size();
+    size_t N = a_copy.size();
     auto result = cmn::signal(2 * N - 1, 0);
 
     for (size_t k = 0; k < 2 * N - 1; ++k) {
@@ -23,8 +28,25 @@ cmn::signal conv::Convolution(cmn::signal a, cmn::signal b) {
                 continue;
             }
 
-            result[k] += a[j] * b[k - j];
+            result[k] += a_copy[j] * b_copy[k - j];
         }
+    }
+
+    return result;
+}
+
+cmn::signal conv::FastConvolution(const cmn::signal a, const cmn::signal b) {
+    cmn::signal a_copy(a);
+    cmn::signal b_copy(b);
+    size_t N = a_copy.size() > b_copy.size() ? a.size() : b.size();
+    a_copy.resize(2 * N - 1, 0);
+    b_copy.resize(2 * N - 1, 0);
+    fft::fft(a_copy);
+    fft::fft(b_copy);
+    auto result = cmn::signal(2 * N - 1, 0);
+
+    for (size_t i = 0; i < result.size(); ++i) {
+        result[i] =  sqrt(2 * N) * a_copy[i] * b_copy[i];   
     }
 
     return result;
