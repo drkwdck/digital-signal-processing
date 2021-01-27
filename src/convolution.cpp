@@ -37,7 +37,7 @@ cmn::signal conv::Convolution(const cmn::signal a, const cmn::signal b) {
 cmn::signal conv::FastConvolution(const cmn::signal a, const cmn::signal b) {
     cmn::signal a_copy(a);
     cmn::signal b_copy(b);
-    
+
     // Найдем ближайшую степень двойки, чтобы расширить вектора для БПФ
     size_t N = 1;
     auto max_vectors_length = a.size() > b.size() ? a.size() : b.size();
