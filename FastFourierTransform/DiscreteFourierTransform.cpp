@@ -26,7 +26,7 @@ std::vector<std::complex<double> > DFT(const std::vector<std::complex<double> > 
 std::vector<std::complex<double> > iDFT(const std::vector<std::complex<double> > &y)
 {
     size_t N = y.size();
-    std::vector<std::complex<double> > x(N, 0);
+    std::vector<std::complex<double>> x(N, 0);
 
     for(size_t k = 0; k < N; ++k)
     {
