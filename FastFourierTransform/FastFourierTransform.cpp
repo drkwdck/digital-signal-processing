@@ -40,31 +40,36 @@ void Shuffle(std::vector<std::complex<double> > &x, int n)
     }
 }
 
-void FastFourierTransform(std::vector<std::complex<double> > &a)
+void FastFourierTransform(std::vector<std::complex<double> > &x)
 {
-    int n = a.size();
-    Shuffle(a, n);
+    int n = x.size();
+    Shuffle(x, n);
 
-    for (int k = 1; (1 << k) <= n; ++k)
+    // стр. 94 (n из учебника = log2(n) отсюда)
+    for (size_t k = 1; (1 << k) <= n; ++k)
     {
-        std::complex<double> wlen = std::exp(std::complex<double>(0, 2 * M_PI / (1 << k)));
-        
-        for (int i = 0; i < n; i += (1 << k))
-        {
-            auto w = std::complex<double>(1, 0);
+        auto wStep = std::exp(std::complex<double>(0, 2 * M_PI / (1 << k)));
 
-            for (int j = 0; j < (1 << (k - 1)); ++j)
+        for (size_t j = 0; j < n; ++j)
+        {
+            auto w0 = std::complex<double>(1, 0);
+
+            for (size_t l = 0; l < (1 << (k - 1)); ++l)
             {
-                std::complex<double> u = a[i+j], v = a[i+j+(1 << k)/2] * w;
-                a[i+j] = u + v;
-                a[i+j+(1 << k)/2] = u - v;
-                w *= wlen;
+                // т.к. на каждой итерации перезатираем наш массив
+                auto a = x[j * (1 << k) + l];
+                auto b = x[j * (1 << k) + l + (1 << (k - 1))] * w0;
+                x[j * (1 << k) +l] = a + b;
+                x[j * (1 << k) + l + (1 << (k - 1))] = a - b;
+                w0 *= wStep;
             }
         }
     }
 
-    for (int i = 0; i < a.size(); ++i)
+    auto normMult = 1 / std::sqrt(n);
+
+    for (size_t i = 0; i < n; ++i)
     {
-        a[i] /= std::sqrt(a.size());
+        x[i] *= normMult;
     }
 }
