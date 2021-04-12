@@ -35,3 +35,15 @@ std::vector<std::complex<double>> ReadSignalFromFile(const char* fileName)
     
     return signal;
 }
+
+double MAE(std::vector<std::complex<double>> a, std::vector<std::complex<double>> b)
+{
+    double result = 0;
+
+    for (size_t i = 0; i < a.size(); ++i)
+    {
+        result += abs(a[i] - b[i]);
+    }
+
+    return result / a.size();
+}

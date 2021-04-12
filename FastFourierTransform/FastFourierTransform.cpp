@@ -3,6 +3,8 @@
 #include <complex>
 #include "FastFourierTransform.h"
 #include <iostream>
+#include <iterator>
+#include <algorithm>
 
 int GetReversedIndex(int num, int bits_count)
 {
@@ -73,4 +75,6 @@ void FastFourierTransform(std::vector<std::complex<double> > &x, bool reverse)
     {
         x[i] *= normMult;
     }
+
+    std::reverse(x.begin() + 1, x.end());
 }

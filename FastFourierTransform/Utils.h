@@ -4,3 +4,4 @@
 
 void GenerateSignalIntoFile(const char* fileName, const int N, const int sRand);
 std::vector<std::complex<double>> ReadSignalFromFile(const char* fileName);
+double MAE(std::vector<std::complex<double>> a, std::vector<std::complex<double>> b);
