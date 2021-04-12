@@ -40,15 +40,16 @@ void Shuffle(std::vector<std::complex<double> > &x, int n)
     }
 }
 
-void FastFourierTransform(std::vector<std::complex<double> > &x)
+void FastFourierTransform(std::vector<std::complex<double> > &x, bool reverse)
 {
     int n = x.size();
     Shuffle(x, n);
+    int sign = reverse ? -1 : 1;
 
     // стр. 94 (n из учебника = log2(n) отсюда)
     for (size_t k = 1; (1 << k) <= n; ++k)
     {
-        auto wStep = std::exp(std::complex<double>(0, 2 * M_PI / (1 << k)));
+        auto wStep = std::exp(std::complex<double>(0, 2 * sign * M_PI / (1 << k)));
 
         for (size_t j = 0; j < n; ++j)
         {
