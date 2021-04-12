@@ -5,23 +5,23 @@
 
 int main()
 {
-    const int signalPoints = 10;
+    const int signalPoints = 32;
     char* singalFilePath = "./data.txt";
-    GenerateSignalIntoFile(singalFilePath, signalPoints, 0);
+    // GenerateSignalIntoFile(singalFilePath, signalPoints, 0);
     auto signal = ReadSignalFromFile(singalFilePath);
-    auto restored_signal = iDFT(DFT(signal));
+    // auto restored_signal = DFT(signal);
     // std::cout << "Difference between original signal and recovered signal:\n";
 
-    for (size_t i = 0; i < restored_signal.size(); ++i)
-    {
-        // std::cout << restored_signal[i] - signal[i] << std::endl;
-    }
+    // for (size_t i = 0; i < restored_signal.size(); ++i)
+    // {
+    //     std::cout << restored_signal[i] << std::endl;
+    // }
 
-    auto y = DFT(signal);
+    std::cout << std::endl;
     FastFourierTransform(signal);
 
-    for (size_t i = 0; i < y.size(); ++i)
+    for (size_t i = 0; i < signal.size(); ++i)
     {
-        std::cout << y[i] - signal[i] << std::endl;
+        std::cout << signal[i] << std::endl;
     }
 }

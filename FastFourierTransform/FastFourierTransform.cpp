@@ -40,27 +40,31 @@ void Shuffle(std::vector<std::complex<double> > &x, int n)
     }
 }
 
-
-
-std::vector<std::complex<double>>  FastFourierTransform(std::vector<std::complex<double>> &x)
+void FastFourierTransform(std::vector<std::complex<double> > &a)
 {
-    int n = x.size();
-    Shuffle(x, n);
+    int n = a.size();
+    Shuffle(a, n);
 
-    for (size_t k = n; k > 0; --k)
+    for (int k = 1; (1 << k) <= n; ++k)
     {
-        for (size_t j = 0; j <= (1 << (n - k)) - 1; ++j)
+        std::complex<double> wlen = std::exp(std::complex<double>(0, 2 * M_PI / (1 << k)));
+        
+        for (int i = 0; i < n; i += (1 << k))
         {
-            for (size_t l = 0; l <= (1 << (k - 1)) - 1; ++l)
+            auto w = std::complex<double>(1, 0);
+
+            for (int j = 0; j < (1 << (k - 1)); ++j)
             {
-                auto w = - std::exp(std::complex<double>(0, -2 * M_PI  * l / (1 << k))); 
-                x[j * (1 << k) + l] = x[j * (1 << k) + l] + w * x[j * (1 << k) + l + (1 << (k - 1))];
-                x[(1 << (k -1)) + j * (1 << k) + l] = x[j * (1 << k) + l] - w * x[j * (1 << k) + l + (1 << (k - 1))];
+                std::complex<double> u = a[i+j], v = a[i+j+(1 << k)/2] * w;
+                a[i+j] = u + v;
+                a[i+j+(1 << k)/2] = u - v;
+                w *= wlen;
             }
         }
-
-        x[k] /= std::sqrt(n);
     }
 
-   x[0] /= std::sqrt(n);
+    for (int i = 0; i < a.size(); ++i)
+    {
+        a[i] /= std::sqrt(a.size());
+    }
 }
