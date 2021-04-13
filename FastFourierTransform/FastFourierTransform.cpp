@@ -53,17 +53,17 @@ void FastFourierTransform(std::vector<std::complex<double> > &x, bool reverse)
     {
         auto wStep = std::exp(std::complex<double>(0, 2 * sign * M_PI / (1 << k)));
 
-        for (size_t j = 0; j < n; ++j)
+        for (size_t j = 0; j < n; j += (1 << k))
         {
             auto w0 = std::complex<double>(1, 0);
 
             for (size_t l = 0; l < (1 << (k - 1)); ++l)
             {
                 // т.к. на каждой итерации перезатираем наш массив
-                auto a = x[j * (1 << k) + l];
-                auto b = x[j * (1 << k) + l + (1 << (k - 1))] * w0;
-                x[j * (1 << k) +l] = a + b;
-                x[j * (1 << k) + l + (1 << (k - 1))] = a - b;
+                auto a = x[j + l];
+                auto b = x[j + l + (1 << (k - 1))] * w0;
+                x[j +l] = a + b;
+                x[j + l + (1 << (k - 1))] = a - b;
                 w0 *= wStep;
             }
         }
