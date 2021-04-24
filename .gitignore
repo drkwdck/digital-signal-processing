@@ -2,4 +2,5 @@
 *.o
 *.out
 *.gch
-FastFourierTransform/*.txt
+fft/*.txt
+fft/main
