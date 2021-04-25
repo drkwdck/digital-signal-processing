@@ -18,8 +18,8 @@ int main() {
     
     // Сравнение исходного сигнала и сигнала, восстановленного после дискретного преобразования Фурье
     // с помощью обратного дискретного преобразования Фурье
-    auto dft_transformed_signal = dft::DFT(signal);
-    std::cout << "Разница между X и ОДПФ(ДПФ(X)): MSE = " << cmn::MSE(signal, dft::iDFT(dft_transformed_signal)) << std::endl;
+    auto dft_transformed_signal = dft::dft(signal);
+    std::cout << "Разница между X и ОДПФ(ДПФ(X)): MSE = " << cmn::MSE(signal, dft::idft(dft_transformed_signal)) << std::endl;
 
     // Сравнение исходного сигнала и сигнала, восстановленного после быстрого преобразования Фурье
     // с помощью обратного быстрого преобразования Фурье
@@ -37,40 +37,45 @@ int main() {
 
 
     // Сравнение времени БПФ и ДПФ
-    clock_t start, end;
+    // clock_t start, end;
     
-    // Замеры времени для ДПФ
-    auto file_stream  = std::ofstream("./matlab/time_dft.txt");
-    auto file_stream_N = std::ofstream("./matlab/N.txt");
+    // // Замеры времени для ДПФ
+    // auto file_stream  = std::ofstream("./matlab/time_dft.txt");
+    // auto file_stream_N = std::ofstream("./matlab/N.txt");
     
-    for (int i = 256; i < 256 * 64; i *= 2) {
-        auto x = cmn::GenerateSignal(i, 0);
-        start = clock();
-        dft::DFT(x);
-        end = clock();
-        file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
-        file_stream_N << i << '\n';
-    }
+    // for (int i = 256; i < 256 * 64; i *= 2) {
+    //     auto x = cmn::GenerateSignal(i, 0);
+    //     start = clock();
+    //     dft::dft(x);
+    //     end = clock();
+    //     file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
+    //     file_stream_N << i << '\n';
+    // }
 
-    file_stream.close();
+    // file_stream.close();
 
-    // Замеры вермени для БПФ
-    file_stream  = std::ofstream("./matlab/time_fft.txt");
+    // // Замеры вермени для БПФ
+    // file_stream  = std::ofstream("./matlab/time_fft.txt");
 
-    for (int i = 256; i < 256 * 64; i *= 2) {
-        auto x = cmn::GenerateSignal(i, 0);
-        start = clock();
-        fft::fft(x);
-        end = clock();
-        file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
-    }
+    // for (int i = 256; i < 256 * 64; i *= 2) {
+    //     auto x = cmn::GenerateSignal(i, 0);
+    //     start = clock();
+    //     fft::fft(x);
+    //     end = clock();
+    //     file_stream << double(end - start) / CLOCKS_PER_SEC << '\n';
+    // }
 
-    file_stream.close();
+    // file_stream.close();
 
     auto a = cmn::GenerateSignal(signal_points_count, 0);
-    auto b = cmn::GenerateSignal(signal_points_count, 0);
+    auto b = cmn::GenerateSignal(signal_points_count, 14);
+    cmn::WriteSignalToFile(a, "a.txt");
+    cmn::WriteSignalToFile(b, "b.txt");
     auto convolution = conv::Convolution(a, b);
     auto conv2 = conv::FastConvolution(a, b);
+    cmn::WriteSignalToFile(convolution, "matlab/conv_cpp.txt");
+    cmn::WriteSignalToFile(conv2, "matlab/fast_conv_cpp.txt");
+  
     std::cout << cmn::MSE(convolution, conv2) << std::endl;
 
     return 0;

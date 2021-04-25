@@ -1,6 +1,6 @@
 #include "common.h"
 
 namespace dft {
-    cmn::signal DFT(const cmn::signal &x);
-    cmn::signal iDFT(const cmn::signal &y);
+    cmn::signal dft(const cmn::signal &x);
+    cmn::signal idft(const cmn::signal &y);
 }

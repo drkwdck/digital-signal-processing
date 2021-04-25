@@ -19,12 +19,11 @@ cmn::signal conv::Convolution(const cmn::signal a, const cmn::signal b) {
         a_copy.resize(b_copy.size(), 0);
     }
 
-    size_t N = a_copy.size();
-    auto result = cmn::signal(2 * N - 1, 0);
+    auto result = cmn::signal(a_copy.size() * 2  -1, 0);
 
-    for (size_t k = 0; k < 2 * N - 1; ++k) {
-        for (size_t j = 0; j < N - 1; ++j) {
-            if (j >= N || k - j >= N || k - j < 0) {
+    for (size_t k = 0; k < result.size(); ++k) {
+        for (size_t j = 0; j < a_copy.size(); ++j) {
+            if (j >= a_copy.size() || k - j >= a_copy.size() || k - j < 0) {
                 continue;
             }
 
@@ -38,16 +37,28 @@ cmn::signal conv::Convolution(const cmn::signal a, const cmn::signal b) {
 cmn::signal conv::FastConvolution(const cmn::signal a, const cmn::signal b) {
     cmn::signal a_copy(a);
     cmn::signal b_copy(b);
-    size_t N = a_copy.size() > b_copy.size() ? a.size() : b.size();
-    a_copy.resize(2 * N - 1, 0);
-    b_copy.resize(2 * N - 1, 0);
-    fft::fft(a_copy);
-    fft::fft(b_copy);
-    auto result = cmn::signal(2 * N - 1, 0);
-
-    for (size_t i = 0; i < result.size(); ++i) {
-        result[i] =  sqrt(2 * N) * a_copy[i] * b_copy[i];   
+    
+    // Найдем ближайшую степень двойки, чтобы расширить вектора для БПФ
+    size_t N = 1;
+    auto max_vectors_length = a.size() > b.size() ? a.size() : b.size();
+    while (N < max_vectors_length) {
+        N <<= 1;
     }
 
+    // Увеличиваем N еще в два раза уже для вычисления свертки
+    N <<= 1;
+
+    a_copy.resize(N, 0);
+    b_copy.resize(N, 0);
+    fft::fft(a_copy);
+    fft::fft(b_copy);
+    auto result = cmn::signal(N, 0);
+
+    for (size_t i = 0; i < result.size(); ++i) {
+        result[i] =  sqrt(N << 2) *  a_copy[i] * b_copy[i] / (double)(2);   
+    }
+
+    fft::fft(result, true);
+    result.resize(a.size() + b.size() - 1);
     return result;
 }
