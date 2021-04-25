@@ -7,6 +7,8 @@
 #include "dft.h"
 #include "fft.h"
 
+// Возвращает число, двоично представление которого - записанное в обратном 
+// порядке двоичное представление переданного числа 
 int GetReversedIndex(int num, int bits_count) {
 	int res = 0;
 

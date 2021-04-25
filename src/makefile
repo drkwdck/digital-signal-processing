@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -c
-SOURCES = common.cpp dft.cpp fft.cpp main.cpp 
+SOURCES = common.cpp dft.cpp fft.cpp convolution.cpp main.cpp 
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = main
 
