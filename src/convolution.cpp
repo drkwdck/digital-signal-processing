@@ -2,11 +2,6 @@
 #include "convolution.h"
 #include "fft.h"
 
-// Если ветокры разных размеров, расширяет их, заполняя нулями
-void NormalizeVectors(cmn::signal a, cmn::signal b) {
-    
-}
-
 cmn::signal conv::Convolution(const cmn::signal a, const cmn::signal b) {
     cmn::signal a_copy(a);
     cmn::signal b_copy(b);

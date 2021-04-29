@@ -56,7 +56,7 @@ int main() {
     file_stream_N.close();
     
 
-    // // Замеры вермени для БПФ
+    // Замеры вермени для БПФ
     file_stream  = std::ofstream("./matlab/time_fft.txt");
 
     for (int i = 256; i < 256 * 64; i *= 2) {

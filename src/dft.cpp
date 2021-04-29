@@ -4,7 +4,6 @@
 #include "common.h"
 #include "dft.h"
 
-// ДПФ
 cmn::signal dft::dft(const cmn::signal &x) {
     size_t N = x.size();
     cmn::signal y(N, 0);
@@ -20,7 +19,6 @@ cmn::signal dft::dft(const cmn::signal &x) {
     return y;
 }
 
-// ОДПФ
 cmn::signal dft::idft(const cmn::signal &y) {
     size_t N = y.size();
     std::vector<std::complex<double>> x(N, 0);
